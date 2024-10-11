@@ -8,6 +8,7 @@ const Game = () => {
     const [gameHistory, setGameHistory] = useState([{ squares: Array(9).fill(null) }]); // Start of game
     const [stepNumber, setStepNumber] = useState(0);
     const [xIsNext, setXisNext] = useState(true);
+    const [colour, setColour] = useState('Green');
 
     const calculateWinner = (squares) => {
         const lines = [
@@ -24,14 +25,17 @@ const Game = () => {
         for (let i = 0; i < lines.length; i++) {
             const [a, b, c] = lines[i];
             if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-                return squares[a];
+                return { winner: squares[a], line: lines[i] };  // returns the winner and the line
             }
         }
 
         return null;
     };
 
-    const handleClick = (i) => {
+    //changes winning move to green
+
+    const handleClick = (i,event) => {
+        event.target.style.color = 'green';
         const history = gameHistory.slice(0, stepNumber + 1);
         const current = history[history.length - 1];
         const squares = current.squares.slice();
@@ -53,7 +57,9 @@ const Game = () => {
     };
 
     const current = gameHistory[stepNumber];
-    const winner = calculateWinner(current.squares);
+    const winnerInfo = calculateWinner(current.squares); // Get winner information
+    const winner = winnerInfo ? winnerInfo.winner : null; // Determine the winner
+    const winningLine = winnerInfo ? winnerInfo.line : []; // Get the winning line
 
     const moves = gameHistory.map((step, move) => {
         const desc = move ?
@@ -79,10 +85,11 @@ const Game = () => {
                 <Board
                     squares={current.squares}
                     onClick={i => handleClick(i)}
+                    winningLine={winningLine} 
                 />
-            </div>
+             </div>
             <div className="game-info">
-                <div>{status}</div>
+                <div style={{ color: winner ? 'green' : 'black' }}>{status}</div> {/* Change color based on winner */}
                 <ol>{moves}</ol>
             </div>
         </div>
