@@ -1,25 +1,6 @@
 import React, { useState } from "react";
 import Board from "../Board";
 
-// will show winning move if mouse hover
-
-function move() {
-    const [color, setColor] = useState('purple');
-    const [hover, setHover] = useState(false);
-   
-    return (
-      <>
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
-        </>
-     
-    )
-  }
-
-
-
-
-
 /**
  * A game of tic-tac-toe.
  */
@@ -27,7 +8,6 @@ const Game = () => {
     const [gameHistory, setGameHistory] = useState([{ squares: Array(9).fill(null) }]); // Start of game
     const [stepNumber, setStepNumber] = useState(0);
     const [xIsNext, setXisNext] = useState(true);
-    const [wins, setWins] = useState({ X: 0, O: 0, Draws: 0 });
 
     const calculateWinner = (squares) => {
         const lines = [
@@ -73,7 +53,8 @@ const Game = () => {
     };
 
     const current = gameHistory[stepNumber];
-    const winningLine = calculateWinner(current.squares); // Get the winning line
+    const winner = calculateWinner(current.squares);
+
     const moves = gameHistory.map((step, move) => {
         const desc = move ?
             'Go to move #' + move :
@@ -92,30 +73,12 @@ const Game = () => {
         status = "Next player: " + (xIsNext ? "X" : "O");
     }
 
-    // Check if the game is a draw
-    const isDraw = !winner && current.squares.every(square => square !== null);
-
-    // Update wins count if the game is over
-    if (winner) {
-        if (winner === "X" && wins.X === 0) {
-            setWins({ ...wins, X: wins.X + 1 });
-        } else if (winner === "O" && wins.O === 0) {
-            setWins({ ...wins, O: wins.O + 1 });
-        }
-    } else if (isDraw && wins.Draws === 0) {
-        setWins({ ...wins, Draws: wins.Draws + 1 });
-    }
-
-    
-
     return (
-        <>
         <div className="game">
             <div className="game-board">
-            <Board
+                <Board
                     squares={current.squares}
                     onClick={i => handleClick(i)}
-                    winningLine={winningLine}  // Pass the winning line to the Board component
                 />
             </div>
             <div className="game-info">
@@ -123,35 +86,6 @@ const Game = () => {
                 <ol>{moves}</ol>
             </div>
         </div>
-         <div className="game-info">
-         <div>{status}</div>
-         <ol>{moves}</ol>
-         <h2>Winners Table</h2>
-         <table>
-             <thead>
-                 <tr>
-                     <th>Player</th>
-                     <th>Wins</th>
-                 </tr>
-             </thead>
-             <tbody>
-                 <tr>
-                     <td>X</td>
-                     <td>{wins.X}</td>
-                 </tr>
-                 <tr>
-                     <td>O</td>
-                     <td>{wins.O}</td>
-                 </tr>
-                 <tr>
-                     <td>Draws</td>
-                     <td>{wins.Draws}</td>
-                 </tr>
-             </tbody>
-         </table>
-     </div>
- </div>
- </>
     );
 };
 

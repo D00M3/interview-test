@@ -57,11 +57,3 @@ ol, ul {
 .appContainer {
 
 }
-
-.square.highlight {
-    background-color: yellow;  /* Highlight color for winning squares */
-}
-
-.square:hover {
-    background-color: lightgreen;  /* Hover color for squares */
-}
