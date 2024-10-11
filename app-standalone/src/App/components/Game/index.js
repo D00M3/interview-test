@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Board from "../Board";
+import WinnersTable from "../winners";
 
 /**
  * A game of tic-tac-toe.
@@ -9,6 +10,7 @@ const Game = () => {
     const [stepNumber, setStepNumber] = useState(0);
     const [xIsNext, setXisNext] = useState(true);
     const [colour, setColour] = useState('Green');
+    const [winnerHistory, setWinnerHistory] = useState([]); // Track all game winner
 
     const calculateWinner = (squares) => {
         const lines = [
@@ -61,6 +63,10 @@ const Game = () => {
     const winner = winnerInfo ? winnerInfo.winner : null; // Determine the winner
     const winningLine = winnerInfo ? winnerInfo.line : []; // Get the winning line
 
+    // Add winner to winnerHistory if there's a winner and game just ended
+    if (winner && !winnerHistory.includes(winner)) {
+        setWinnerHistory([...winnerHistory, winner]); 
+
     const moves = gameHistory.map((step, move) => {
         const desc = move ?
             'Go to move #' + move :
@@ -84,7 +90,7 @@ const Game = () => {
             <div className="game-board">
                 <Board
                     squares={current.squares}
-                    onClick={i => handleClick(i)}
+                    onClick={(i, event) => handleClick(i, event)}
                     winningLine={winningLine} 
                 />
              </div>
@@ -92,8 +98,11 @@ const Game = () => {
                 <div style={{ color: winner ? 'green' : 'black' }}>{status}</div> {/* Change color based on winner */}
                 <ol>{moves}</ol>
             </div>
+            <WinnersTable winnerHistory={winnerHistory} /> {/* Add WinnersTable component */}
         </div>
     );
 };
+
+}
 
 export default Game;
